@@ -6,7 +6,7 @@ import { createServer } from 'http';
 const debug = debugModule('vercel-express-online-demo:server');
 
 const port = normalizePort(process.env.PORT || '3000');
-set('port', port);
+app.set('port', port);
 
 const server = createServer(app);
 
