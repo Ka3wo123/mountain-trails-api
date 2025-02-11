@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import app from '../app.js';
-import { debug } from 'debug';
+import debugModule from 'debug';
 import { createServer } from 'http';
-const vercelDebug = debug('vercel-express-online-demo:server');
+const debug = debugModule('vercel-express-online-demo:server');
 
 const port = normalizePort(process.env.PORT || '3000');
 set('port', port);
@@ -54,5 +54,5 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  vercelDebug('Listening on ' + bind);
+  debug('Listening on ' + bind);
 }
