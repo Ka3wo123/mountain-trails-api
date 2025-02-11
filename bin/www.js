@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import app, { set } from '../app';
+import server  from '../server';
 import { createServer } from 'http';
 const debug = debug('vercel-express-online-demo:server');
 
 const port = normalizePort(process.env.PORT || '3000');
 set('port', port);
 
-const server = createServer(app);
+const server = createServer(server);
 
 server.listen(port);
 server.on('error', onError);
