@@ -13,16 +13,17 @@ router.get('/', async (req, res) => {
     const lon2Float = parseFloat(lon2);
   
     try {
+      let data;
       if (search) {
         const regex = new RegExp(search, 'i');
-        const data = await Peak.find({
+        data = await Peak.find({
           'tags.name': { $regex: regex }
         });
         res.json({ data });
         return;
       }
   
-      const data = await Peak.find({
+      data = await Peak.find({
         lat: { $gte: Math.min(lat1Float, lat2Float), $lte: Math.max(lat1Float, lat2Float) },
         lon: { $gte: Math.min(lon1Float, lon2Float), $lte: Math.max(lon1Float, lon2Float) }
       });

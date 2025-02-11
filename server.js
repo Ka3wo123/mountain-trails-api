@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import morgan from 'morgan';
 import peaksRouter from './endpoints/peaks.js';
-import saddlesRouter from './endpoints/peaks.js';
+import saddlesRouter from './endpoints/saddles.js';
 
 const app = express();
 app.use(cors());
