@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
-import app from '../server';
+import app from '../app.js';
 import { createServer } from 'http';
 const debug = debug('vercel-express-online-demo:server');
 
 const port = normalizePort(process.env.PORT || '3000');
 set('port', port);
 
-const app = createServer(app);
+const server = createServer(app);
 
-app.listen(port);
-app.on('error', onError);
-app.on('listening', onListening);
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
@@ -49,7 +49,7 @@ function onError(error) {
 }
 
 function onListening() {
-  var addr = app.address();
+  var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
