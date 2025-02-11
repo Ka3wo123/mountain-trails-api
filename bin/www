@@ -3,7 +3,7 @@
 import app from '../app.js';
 import debugModule from 'debug';
 import { createServer } from 'http';
-const debug = debugModule('vercel-express-online-demo:server');
+const debug = debugModule('server:server');
 
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);

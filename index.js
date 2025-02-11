@@ -1,1 +1,1 @@
-import "./bin/www.js";
+import "./bin/www";

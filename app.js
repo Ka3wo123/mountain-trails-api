@@ -20,4 +20,11 @@ mongoose.connect(mongoUri)
   .then(() => console.log('Connected to database'))
   .catch(err => console.error('Error occurred', err));
 
+if (process.env.NODE_ENV !== 'production') {  
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
 export default app;
