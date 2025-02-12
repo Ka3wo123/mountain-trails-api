@@ -2,10 +2,12 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import morgan from 'morgan';
-import peaksRouter from './endpoints/peaks.js';
-import saddlesRouter from './endpoints/saddles.js';
+import peaksRouter from './endpoints/peaksRoutes.js';
+import saddlesRouter from './endpoints/saddlesRoutes.js';
+import userRouter from './endpoints/userRoutes.js';
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -13,6 +15,7 @@ app.use(morgan('dev'));
 
 app.use('/api/peaks', peaksRouter);
 app.use('/api/saddles', saddlesRouter);
+app.use('/api/user', userRouter);
 
 const mongoUri = process.env.MONGO_URI ? process.env.MONGO_URI : 'mongodb://localhost:27017/trails';
 
