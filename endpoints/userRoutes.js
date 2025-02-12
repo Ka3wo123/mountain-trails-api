@@ -60,11 +60,11 @@ router.get('/:nick/peaks', async (req, res) => {
 
     try {
         const user = await findUserByNick(nick);
-        user.populate('peaksAchieved');
-
+        
         if (!user) {
             return res.status(404).json({ error: `User ${nick} not found` });
         }
+        user.populate('peaksAchieved');
 
         const totalPeaks = user.peaksAchieved.length;
 
