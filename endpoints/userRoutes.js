@@ -31,8 +31,7 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-    const { nick, password } = req.body;
-    console.log(jwtsecret)
+    const { nick, password } = req.body;    
 
     try {
         const user = await findUserByNick(nick);
