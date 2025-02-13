@@ -15,23 +15,20 @@ router.post('/register', async (req, res) => {
     const { name, surname, nick, password } = req.body;
 
     try {
-        const userExists = await findUserByNick(nick);
-        if (userExists) {
-            return res.status(400).json({ error: 'Duplicate nickname' });
-        }
-
         const newUser = new User({ name, surname, nick, password });
         await newUser.save();
 
         res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
-        console.error('Error register user', error);
+        if (error.code === 11000) {
+            return res.status(400).json({ error: 'Duplicate nickname' });
+        }
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
 router.post('/login', async (req, res) => {
-    const { nick, password } = req.body;    
+    const { nick, password } = req.body;
 
     try {
         const user = await findUserByNick(nick);
@@ -55,11 +52,11 @@ router.post('/login', async (req, res) => {
 
 router.get('/:nick/peaks', async (req, res) => {
     const { nick } = req.params;
-    const { page = 1, limit = 10 } = req.query;
+    const { page = 1, limit = 2 } = req.query;
 
     try {
         const user = await findUserByNick(nick);
-        
+
         if (!user) {
             return res.status(404).json({ error: `User ${nick} not found` });
         }
@@ -103,12 +100,14 @@ router.post('/:nick/peaks', async (req, res) => {
             return res.status(404).json({ error: 'Peak not found' });
         }
 
-        if (user.peaksAchieved.includes(peakId)) {
+        const result = await User.updateOne(
+            { nick },
+            { $addToSet: { peaksAchieved: peakId } }
+        );
+
+        if (result.upsertedCount === 0) {
             return res.status(400).json({ error: 'Peak already achieved' });
         }
-
-        user.peaksAchieved.push(peak);
-        await user.save();
 
         res.status(201).json({ message: 'Peak added to user\'s achieved list', peaksAchieved: user.peaksAchieved });
     } catch (error) {
