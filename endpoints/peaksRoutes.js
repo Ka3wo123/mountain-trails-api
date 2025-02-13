@@ -13,10 +13,9 @@ router.get('/', async (req, res) => {
 
   try {
     let data;
-    if (search) {
-      const regex = new RegExp(search, 'i');
+    if (search) {      
       data = await Peak.find({
-        'tags.name': { $regex: regex }
+        'tags.name': { $regex: `^${search}.*`, $options: 'i' }
       });
       res.json({ data });
       return;
