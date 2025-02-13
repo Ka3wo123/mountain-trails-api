@@ -11,6 +11,32 @@ const router = express.Router();
 const jwtsecret = process.env.JWT_SECRET;
 
 
+
+router.get('/', async (_, res) => {
+    try {
+        const users = await User.find();
+        const usersDto = toDto(users);
+
+        res.status(200).json({ data: usersDto });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' })
+    }
+});
+
+router.get('/:nick', async (req, res) => {
+    const { nick } = req.params;
+    try {
+        const user = await User.findOne({ nick });
+        const userDto = toDto(user);
+
+        console.log(userDto)
+
+        res.status(200).json({ data: userDto });
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' })
+    }
+});
+
 router.post('/register', async (req, res) => {
     const { name, surname, nick, password } = req.body;
 
@@ -60,18 +86,29 @@ router.get('/:nick/peaks', async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: `User ${nick} not found` });
         }
-        user.populate('peaksAchieved');
 
-        const totalPeaks = user.peaksAchieved.length;
+        const peaksAchievedIds = user.peaksAchieved;
+        const peaks = await Peak.find({ '_id': { $in: peaksAchievedIds } });
 
+        const totalSystemPeaks = await Peak.countDocuments();
+
+        const totalPeaks = peaks.length;
         const startIndex = (page - 1) * limit;
+        const peaksOnPage = peaks.slice(startIndex, startIndex + parseInt(limit));
 
-        const peaksOnPage = user.peaksAchieved.slice(startIndex, startIndex + parseInt(limit));
+        const peakDtos = peaksOnPage.map(peak => ({
+            _id: peak._id,
+            name: peak.tags.name,
+            ele: peak.tags.ele,
+            lon: peak.lon,
+            lat: peak.lat
+        }));
 
         return res.json({
-            data: peaksOnPage,
+            data: peakDtos,
             totalPeaks,
             totalPages: Math.ceil(totalPeaks / limit),
+            totalSystemPeaks: totalSystemPeaks,
             currentPage: parseInt(page),
             limit: parseInt(limit)
         });
@@ -100,14 +137,15 @@ router.post('/:nick/peaks', async (req, res) => {
             return res.status(404).json({ error: 'Peak not found' });
         }
 
-        const result = await User.updateOne(
+        if (user.peaksAchieved.includes(peakId)) {
+            return res.status(400).json({ error: 'Peak already achieved' });
+        }
+
+        await User.updateOne(
             { nick },
             { $addToSet: { peaksAchieved: peakId } }
         );
 
-        if (result.upsertedCount === 0) {
-            return res.status(400).json({ error: 'Peak already achieved' });
-        }
 
         res.status(201).json({ message: 'Peak added to user\'s achieved list', peaksAchieved: user.peaksAchieved });
     } catch (error) {
@@ -115,6 +153,30 @@ router.post('/:nick/peaks', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+const toDto = (input) => {
+    if (Array.isArray(input)) {
+        return input.map(u => ({
+            _id: u._id,
+            name: u.name,
+            surname: u.surname,
+            nick: u.nick,
+            peaksAchieved: u.peaksAchieved,
+            createdAt: u.createdAt,
+            updatedAt: u.updatedAt
+        }));
+    } else {
+        return {
+            _id: input._id,
+            name: input.name,
+            surname: input.surname,
+            nick: input.nick,
+            peaksAchieved: input.peaksAchieved,
+            createdAt: input.createdAt,
+            updatedAt: input.updatedAt
+        };
+    }
+};
 
 const findUserByNick = (nick) => {
     return User.findOne({ nick });

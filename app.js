@@ -15,7 +15,7 @@ app.use(morgan('dev'));
 
 app.use('/api/peaks', peaksRouter);
 app.use('/api/saddles', saddlesRouter);
-app.use('/api/user', userRouter);
+app.use('/api/users', userRouter);
 
 const mongoUri = process.env.MONGO_URI ? process.env.MONGO_URI : 'mongodb://localhost:27017/trails';
 
