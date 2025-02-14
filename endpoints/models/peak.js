@@ -19,20 +19,20 @@ const peakSchema = new mongoose.Schema({
 
 const Peak = mongoose.model('Peak', peakSchema);
 
-const addIndex = async (fields, indexName) => {
-    const indexExists = await Peak.collection.indexExists(indexName);    
+const addIndex = async (fields, options) => {
+    const indexExists = await Peak.collection.indexExists(options.name);
     if (!indexExists) {
         const indexFields = fields.reduce((acc, field) => {
             acc[field] = 1;
             return acc;
         }, {});
-        peakSchema.index(indexFields, { name: indexName });
+        peakSchema.index(indexFields, options);
         await Peak.createIndexes();
     }
 };
 
-addIndex(['lat', 'lon'], 'latLonIndex');
+addIndex(['lat', 'lon'], { name: 'latLonIndex' });
 
-addIndex(['tags.name'], 'peaksNameIndex');
+addIndex(['tags.name'], { name: 'peaksNameIndex' });
 
 export default Peak;
