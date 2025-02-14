@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import peaksRouter from './endpoints/peaksRoutes.js';
 import saddlesRouter from './endpoints/saddlesRoutes.js';
 import userRouter from './endpoints/userRoutes.js';
+import photoStorageRouter from './endpoints/photoStorageRouter.js';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(morgan('dev'));
 app.use('/api/peaks', peaksRouter);
 app.use('/api/saddles', saddlesRouter);
 app.use('/api/users', userRouter);
+app.use('/api/photos', photoStorageRouter);
 
 const mongoUri = process.env.MONGO_URI ? process.env.MONGO_URI : 'mongodb://localhost:27017/trails';
 

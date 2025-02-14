@@ -3,14 +3,10 @@ import User from './models/user.js';
 import Peak from './models/peak.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { JWT_SECRET } from '../config.js';
 
 const router = express.Router();
-const jwtsecret = process.env.JWT_SECRET;
-
-
+const jwtsecret = JWT_SECRET;
 
 router.get('/', async (_, res) => {
     try {
@@ -27,9 +23,7 @@ router.get('/:nick', async (req, res) => {
     const { nick } = req.params;
     try {
         const user = await User.findOne({ nick });
-        const userDto = toDto(user);
-
-        console.log(userDto)
+        const userDto = toDto(user);        
 
         res.status(200).json({ data: userDto });
     } catch (error) {
@@ -43,6 +37,7 @@ router.post('/register', async (req, res) => {
     try {
         const newUser = new User({ name, surname, nick, password });
         await newUser.save();
+        console.log(newUser)
 
         res.status(201).json({ message: 'User created successfully' });
     } catch (error) {

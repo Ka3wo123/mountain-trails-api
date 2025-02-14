@@ -1,14 +1,18 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
-
 const ROUNDS = 10;
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     surname: { type: String, required: true },
     nick: { type: String, required: true },
     password: { type: String, required: true },
-    peaksAchieved: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Peak' }]
+    peaksAchieved: [
+        {
+            peak: { type: mongoose.Schema.Types.ObjectId, ref: 'Peak' },
+            images: [{ type: String }]
+        }
+    ]
 }, {
     timestamps: true
 });
@@ -44,6 +48,6 @@ const addIndex = async (fields, options) => {
 };
 
 addIndex(['nick'], { name: 'userNickUniqueIndex', unique: true });
-addIndex(['peaksAchieved'], { name: 'peaksAchievedUniqueIndex', unique: true })
+addIndex(['peaksAchieved'], { name: 'peaksAchievedUniqueIndex' })
 
 export default User;
