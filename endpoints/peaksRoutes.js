@@ -45,4 +45,14 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/count', async (_, res) => {
+  try {
+    const total = await Peak.countDocuments();
+    res.status(200).json({ total: total })
+  } catch (error) {
+    res.status(500).json('Internal server error');
+  }
+
+})
+
 export default router;
