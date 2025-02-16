@@ -23,7 +23,7 @@ router.get('/:nick', async (req, res) => {
     const { nick } = req.params;
     try {
         const user = await User.findOne({ nick });
-        const userDto = toDto(user);        
+        const userDto = toDto(user);
 
         res.status(200).json({ data: userDto });
     } catch (error) {
@@ -37,8 +37,6 @@ router.post('/register', async (req, res) => {
     try {
         const newUser = new User({ name, surname, nick, password });
         await newUser.save();
-        console.log(newUser)
-
         res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
         if (error.code === 11000) {
@@ -108,10 +106,11 @@ router.get('/:nick/peaks', async (req, res) => {
             limit: parseInt(limit)
         });
     } catch (error) {
-        console.error('Error register user', error);
+        console.error('Error user peaks', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 router.post('/:nick/peaks', async (req, res) => {
     const { nick } = req.params;
@@ -141,6 +140,7 @@ router.post('/:nick/peaks', async (req, res) => {
             { $addToSet: { peaksAchieved: peakId } }
         );
 
+        await user.save();
 
         res.status(201).json({ message: 'Peak added to user\'s achieved list', peaksAchieved: user.peaksAchieved });
     } catch (error) {

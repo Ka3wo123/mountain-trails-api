@@ -7,12 +7,7 @@ const userSchema = new mongoose.Schema({
     surname: { type: String, required: true },
     nick: { type: String, required: true },
     password: { type: String, required: true },
-    peaksAchieved: [
-        {
-            peak: { type: mongoose.Schema.Types.ObjectId, ref: 'Peak' },
-            images: [{ type: String }]
-        }
-    ]
+    peaksAchieved: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Peak' }]
 }, {
     timestamps: true
 });
