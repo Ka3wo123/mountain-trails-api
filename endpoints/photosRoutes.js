@@ -2,6 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import User from './models/user.js';
+import authenticateJWT from './middlewares/jwt.js';
 
 const router = Router();
 
@@ -19,7 +20,7 @@ cloudinary.config({
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-router.post('/upload', upload.single('image'), async (req, res) => {
+router.post('/upload', authenticateJWT, upload.single('image'), async (req, res) => {
     const { folder, peakId, nick } = req.body;
 
     try {
@@ -70,7 +71,7 @@ router.post('/upload', upload.single('image'), async (req, res) => {
     }
 });
 
-router.delete('/delete', async (req, res) => {
+router.delete('/delete', authenticateJWT, async (req, res) => {
     const { nick, peakId, publicId } = req.body;
 
     try {
