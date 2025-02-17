@@ -52,7 +52,9 @@ const addIndex = async (fields, options) => {
     }
 };
 
-addIndex(['nick'], { name: 'userNickUniqueIndex', unique: true });
-addIndex(['peaksAchieved'], { name: 'peaksAchievedUniqueIndex' })
+if (process.env.NODE_ENV !== 'production') {
+    addIndex(['nick'], { name: 'userNickUniqueIndex', unique: true });
+    addIndex(['peaksAchieved'], { name: 'peaksAchievedUniqueIndex' })
+}
 
 export default User;

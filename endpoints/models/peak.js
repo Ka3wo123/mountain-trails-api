@@ -31,8 +31,10 @@ const addIndex = async (fields, options) => {
     }
 };
 
-addIndex(['lat', 'lon'], { name: 'latLonIndex' });
 
-addIndex(['tags.name'], { name: 'peaksNameIndex' });
+if(process.env.NODE_ENV !== 'production') {
+    addIndex(['lat', 'lon'], { name: 'latLonIndex' });
+    addIndex(['tags.name'], { name: 'peaksNameIndex' });
+}
 
 export default Peak;
