@@ -2,12 +2,22 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
 const ROUNDS = 10;
+
+const peakToSave = new mongoose.Schema({
+    peakId: { type: mongoose.Schema.Types.ObjectId, ref: 'Peak' },
+    imgData: [{
+        url: { type: String },
+        publicId: { type: String }
+    }
+    ]
+}, { _id: false });
+
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     surname: { type: String, required: true },
     nick: { type: String, required: true },
     password: { type: String, required: true },
-    peaksAchieved: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Peak' }]
+    peaksAchieved: [peakToSave]
 }, {
     timestamps: true
 });

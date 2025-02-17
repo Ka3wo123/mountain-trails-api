@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
     data = await Peak.find({
       lat: { $gte: Math.min(lat1Float, lat2Float), $lte: Math.max(lat1Float, lat2Float) },
       lon: { $gte: Math.min(lon1Float, lon2Float), $lte: Math.max(lon1Float, lon2Float) }
-    }).skip(skip).limit(parseInt(limit));
+    });
 
     res.json({ data, total });
   } catch (error) {

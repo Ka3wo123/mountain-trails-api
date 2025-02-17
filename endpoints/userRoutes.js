@@ -80,7 +80,7 @@ router.get('/:nick/peaks', async (req, res) => {
             return res.status(404).json({ error: `User ${nick} not found` });
         }
 
-        const peaksAchievedIds = user.peaksAchieved;
+        const peaksAchievedIds = user.peaksAchieved.map(peak => peak.peakId);
         const peaks = await Peak.find({ '_id': { $in: peaksAchievedIds } });
 
         const totalSystemPeaks = await Peak.countDocuments();
@@ -90,7 +90,7 @@ router.get('/:nick/peaks', async (req, res) => {
         const peaksOnPage = peaks.slice(startIndex, startIndex + parseInt(limit));
 
         const peakDtos = peaksOnPage.map(peak => ({
-            _id: peak._id,
+            peakId: peak._id,
             name: peak.tags.name,
             ele: peak.tags.ele,
             lon: peak.lon,
@@ -122,22 +122,24 @@ router.post('/:nick/peaks', async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        if (!user.peaksAchieved) {
-            user.peaksAchieved = [];
-        }
-
         const peak = await Peak.findById(peakId);
         if (!peak) {
             return res.status(404).json({ error: 'Peak not found' });
         }
 
-        if (user.peaksAchieved.includes(peakId)) {
+        const peakIds = user.peaksAchieved.map(p => p.peakId.toString());        
+
+        if (peakIds.includes(peakId)) {
             return res.status(400).json({ error: 'Peak already achieved' });
+        }
+
+        const peakToSave = {
+            peakId: peakId            
         }
 
         await User.updateOne(
             { nick },
-            { $addToSet: { peaksAchieved: peakId } }
+            { $addToSet: { peaksAchieved: peakToSave } }
         );
 
         await user.save();
