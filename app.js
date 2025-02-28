@@ -30,7 +30,7 @@ const mongoUri = process.env.MONGO_URI ? process.env.MONGO_URI : 'mongodb://loca
 
 mongoose.connect(mongoUri)
   .then(() => console.log('Connected to database'))
-  .catch(err => console.error('Error occurred', err));
+  .catch(err => console.error('Error occurred when connecting to db', err));
 
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 5000;
