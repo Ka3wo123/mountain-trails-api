@@ -13,8 +13,8 @@ const app = express();
 const allowedOrigins = [PROD_URL, LOCAL_URL];
 
 app.use(cors({
-  // origin: allowedOrigins,
-  // credentials: true  
+  origin: allowedOrigins,
+  credentials: true  
 }));
 app.use(cookieParser())
 app.use(express.json());
