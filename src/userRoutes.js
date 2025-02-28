@@ -10,8 +10,8 @@ const router = express.Router();
 const jwtsecret = JWT_SECRET;
 const jwtRefreshSecret = JWT_REFRESH_SECRET;
 const EXPIRES_IN = '10m';
-const REFRESH_EXPIRES_IN = '30d';
-const SAME_SITE = 'None';
+// const REFRESH_EXPIRES_IN = '30d';
+// const SAME_SITE = 'None';
 
 router.get('/', async (_, res) => {
     try {
