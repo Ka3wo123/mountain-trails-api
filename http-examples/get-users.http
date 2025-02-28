@@ -1,0 +1,22 @@
+@URL=http://localhost:5000/api
+
+# @name session
+GET {{URL}}/users
+
+# @ref session
+GET {{URL}}/users/test
+
+# @ref session
+POST {{URL}}/users/login
+Content-Type: application/json
+{
+    "nick": "test",
+    "password": "test"
+}
+
+# @ref session
+POST {{URL}}/users/refresh-token
+Content-Type: application/json
+{
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2IzMTdlZjVjMzQ3MDAzZGM0ZGEyODEiLCJuaWNrIjoidGVzdCIsImlhdCI6MTc0MDczNzY4NywiZXhwIjoxNzQzMzI5Njg3fQ._-XSbqID0Lg-jocDu2m4dAkzVhXp5D1vB_EzaLdtgYY"
+}

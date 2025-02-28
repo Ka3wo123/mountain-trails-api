@@ -3,10 +3,14 @@ import User from './models/user.js';
 import Peak from './models/peak.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../config.js';
+import { JWT_SECRET, JWT_REFRESH_SECRET } from '../config.js';
+import authenticateJWT from './middlewares/jwt.js';
 
 const router = express.Router();
 const jwtsecret = JWT_SECRET;
+const jwtRefreshSecret = JWT_REFRESH_SECRET;
+const EXPIRES_IN = '10m';
+const REFRESH_EXPIRES_IN = '30d';
 
 router.get('/', async (_, res) => {
     try {
@@ -52,7 +56,7 @@ router.post('/login', async (req, res) => {
     try {
         const user = await findUserByNick(nick);
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ error: 'User not found' + `${nick}` });
         }
 
         const doesMatch = await bcrypt.compare(password, user.password);
@@ -60,7 +64,10 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ error: 'Invalid credentials' });
         }
 
-        const token = jwt.sign({ userId: user._id, nick: user.nick }, jwtsecret, { expiresIn: '7d' });
+        const token = jwt.sign({ userId: user._id, nick: user.nick }, jwtsecret, { expiresIn: EXPIRES_IN });
+        const refreshToken = jwt.sign({ userId: user._id, nick: user.nick }, jwtRefreshSecret, { expiresIn: REFRESH_EXPIRES_IN });
+
+        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
 
         res.json({ message: 'Login successful', token, user: { nick: user.nick } });
     } catch (error) {
@@ -68,6 +75,32 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+router.post('/logout', async (_, res) => {
+    res.clearCookie('refreshToken', { httpOnly: true, secure: true, sameSite: 'Strict' });
+    res.json({ message: 'Logged out successfully' });
+});
+
+router.post('/refresh-token', async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+        const decoded = jwt.verify(refreshToken, jwtRefreshSecret);
+        const newAccessToken = jwt.sign(
+            { userId: decoded._id, nick: decoded.nick },
+            jwtsecret,
+            { expiresIn: EXPIRES_IN }
+        )
+        res.json({ accessToken: newAccessToken })
+    } catch(error) {
+        console.error('Error refreshing token', error);
+        res.status(403).json({error: 'Invalid refresh token'})
+    }
+})
 
 router.get('/:nick/peaks', async (req, res) => {
     const { nick } = req.params;
@@ -112,7 +145,7 @@ router.get('/:nick/peaks', async (req, res) => {
 });
 
 
-router.post('/:nick/peaks', async (req, res) => {
+router.post('/:nick/peaks', authenticateJWT, async (req, res) => {
     const { nick } = req.params;
     const { peakId } = req.body;
 
@@ -127,14 +160,14 @@ router.post('/:nick/peaks', async (req, res) => {
             return res.status(404).json({ error: 'Peak not found' });
         }
 
-        const peakIds = user.peaksAchieved.map(p => p.peakId.toString());        
+        const peakIds = user.peaksAchieved.map(p => p.peakId.toString());
 
         if (peakIds.includes(peakId)) {
             return res.status(400).json({ error: 'Peak already achieved' });
         }
 
         const peakToSave = {
-            peakId: peakId            
+            peakId: peakId
         }
 
         await User.updateOne(
