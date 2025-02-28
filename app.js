@@ -11,15 +11,17 @@ import { LOCAL_URL, PROD_URL } from './config.js';
 
 const app = express();
 const allowedOrigins = [PROD_URL, LOCAL_URL];
+const corsOptions = {
+  origin: allowedOrigins,  
+  credentials: true
+}
 
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true  
-}));
+app.use(cors(corsOptions));
 app.use(cookieParser())
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
+app.options('*', cors(corsOptions))
 
 app.use('/api/peaks', peaksRouter);
 app.use('/api/saddles', saddlesRouter);
