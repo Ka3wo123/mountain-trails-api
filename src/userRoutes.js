@@ -66,9 +66,9 @@ router.post('/login', async (req, res) => {
         }
 
         const token = jwt.sign({ userId: user._id, nick: user.nick }, jwtsecret, { expiresIn: EXPIRES_IN });
-        const refreshToken = jwt.sign({ userId: user._id, nick: user.nick }, jwtRefreshSecret, { expiresIn: REFRESH_EXPIRES_IN });
+        // const refreshToken = jwt.sign({ userId: user._id, nick: user.nick }, jwtRefreshSecret, { expiresIn: REFRESH_EXPIRES_IN });
 
-        res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: SAME_SITE });
+        // res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: SAME_SITE });
 
         res.json({ message: 'Login successful', token, user: { nick: user.nick } });
     } catch (error) {
@@ -78,7 +78,7 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/logout', async (_, res) => {
-    res.clearCookie('refreshToken', { httpOnly: true, secure: true, sameSite: SAME_SITE });
+    // res.clearCookie('refreshToken', { httpOnly: true, secure: true, sameSite: SAME_SITE });
     res.json({ message: 'Logged out successfully' });
 });
 
