@@ -14,15 +14,13 @@ const allowedOrigins = [LOCAL_URL, PROD_URL];
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, origin);
     } else {
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true,
-  methods: "GET, POST, PUT, DELETE, OPTIONS",
-  allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  credentials: true  
 }));
 app.options('*', (req, res) => {
   res.sendStatus(200);
