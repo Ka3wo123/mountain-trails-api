@@ -7,11 +7,19 @@ import peaksRouter from './src/peaksRoutes.js';
 import saddlesRouter from './src/saddlesRoutes.js';
 import userRouter from './src/userRoutes.js';
 import photosRouter from './src/photosRoutes.js';
+import { LOCAL_URL, PROD_URL } from './config.js';
 
 const app = express();
+const allowedOrigins = [LOCAL_URL, PROD_URL];
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: (o, c) => {
+    if(allowedOrigins.indexOf(o) !== -1 || !o) {
+      c(null, true);
+    } else {
+      c(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(cookieParser())
