@@ -12,10 +12,12 @@ import { LOCAL_URL, PROD_URL } from './config.js';
 const app = express();
 const allowedOrigins = [LOCAL_URL, PROD_URL];
 
+console.log(allowedOrigins)
+
 app.use(cors({
   origin: (origin, callback) => {
     if (allowedOrigins.includes(origin) || !origin) {
-      callback(null, origin);
+      callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
     }
