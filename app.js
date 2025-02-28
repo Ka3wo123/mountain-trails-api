@@ -10,18 +10,12 @@ import photosRouter from './src/photosRoutes.js';
 import { LOCAL_URL, PROD_URL } from './config.js';
 
 const app = express();
-const allowedOrigins = [PROD_URL];
+const allowedOrigins = [PROD_URL, LOCAL_URL];
 
 console.log(allowedOrigins)
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (allowedOrigins.includes(origin) || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: allowedOrigins,
   credentials: true  
 }));
 app.options('*', (req, res) => {
