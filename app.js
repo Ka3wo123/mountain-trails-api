@@ -10,7 +10,7 @@ import photosRouter from './src/photosRoutes.js';
 import { LOCAL_URL, PROD_URL } from './config.js';
 
 const app = express();
-const allowedOrigins = [LOCAL_URL, PROD_URL];
+const allowedOrigins = [PROD_URL];
 
 console.log(allowedOrigins)
 
