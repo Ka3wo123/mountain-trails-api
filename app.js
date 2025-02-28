@@ -13,15 +13,20 @@ const app = express();
 const allowedOrigins = [LOCAL_URL, PROD_URL];
 
 app.use(cors({
-  origin: (o, c) => {
-    if(allowedOrigins.indexOf(o) !== -1 || !o) {
-      c(null, true);
+  origin: (origin, callback) => {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
     } else {
-      c(new Error('Not allowed by CORS'));
+      callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: "GET, POST, PUT, DELETE, OPTIONS",
+  allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Authorization"
 }));
+app.options('*', (req, res) => {
+  res.sendStatus(200);
+})
 app.use(cookieParser())
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
