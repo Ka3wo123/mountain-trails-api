@@ -21,7 +21,7 @@ app.use(cookieParser())
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
-app.options('*', cors(corsOptions))
+app.options('*', cors(corsOptions));
 
 app.use('/api/peaks', peaksRouter);
 app.use('/api/saddles', saddlesRouter);

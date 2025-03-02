@@ -9,7 +9,7 @@ import authenticateJWT from './middlewares/jwt.js';
 const router = express.Router();
 const jwtsecret = JWT_SECRET;
 const jwtRefreshSecret = JWT_REFRESH_SECRET;
-const EXPIRES_IN = '10m';
+const EXPIRES_IN = '1m';
 const REFRESH_EXPIRES_IN = '30d';
 const SAME_SITE = 'None';
 
@@ -97,9 +97,9 @@ router.post('/refresh-token', async (req, res) => {
             { expiresIn: EXPIRES_IN }
         )
         res.json({ accessToken: newAccessToken })
-    } catch(error) {
+    } catch (error) {
         console.error('Error refreshing token', error);
-        res.status(403).json({error: 'Invalid refresh token'})
+        res.status(403).json({ error: 'Invalid refresh token' })
     }
 })
 
