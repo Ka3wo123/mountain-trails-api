@@ -1,11 +1,11 @@
-import mongoose from "mongoose";
-import bcrypt from "bcrypt";
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 const ROUNDS = 10;
 
 const peakToSave = new mongoose.Schema(
   {
-    peakId: { type: mongoose.Schema.Types.ObjectId, ref: "Peak" },
+    peakId: { type: mongoose.Schema.Types.ObjectId, ref: 'Peak' },
     imgData: [
       {
         url: { type: String },
@@ -13,7 +13,7 @@ const peakToSave = new mongoose.Schema(
       },
     ],
   },
-  { _id: false },
+  { _id: false }
 );
 
 const userSchema = new mongoose.Schema(
@@ -26,11 +26,11 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
 
   try {
     const salt = await bcrypt.genSalt(ROUNDS);
@@ -45,7 +45,7 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
 const addIndex = async (fields, options) => {
   const indexExists = await User.collection.indexExists(options.name);
@@ -59,9 +59,9 @@ const addIndex = async (fields, options) => {
   }
 };
 
-if (process.env.NODE_ENV !== "production") {
-  addIndex(["nick"], { name: "userNickUniqueIndex", unique: true });
-  addIndex(["peaksAchieved"], { name: "peaksAchievedUniqueIndex" });
+if (process.env.NODE_ENV !== 'production') {
+  addIndex(['nick'], { name: 'userNickUniqueIndex', unique: true });
+  addIndex(['peaksAchieved'], { name: 'peaksAchievedUniqueIndex' });
 }
 
 export default User;

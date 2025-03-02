@@ -1,9 +1,9 @@
-import express from "express";
-import Saddle from "./models/saddle.js";
+import express from 'express';
+import Saddle from './models/saddle.js';
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   const { lat1, lon1, lat2, lon2 } = req.query;
 
   const lat1Float = parseFloat(lat1);
@@ -25,8 +25,8 @@ router.get("/", async (req, res) => {
 
     res.json({ data });
   } catch (error) {
-    console.error("Error fetching saddles:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Error fetching saddles:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

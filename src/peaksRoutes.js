@@ -1,9 +1,9 @@
-import express from "express";
-import Peak from "./models/peak.js";
+import express from 'express';
+import Peak from './models/peak.js';
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   const { lat1, lon1, lat2, lon2, search, page = 1, limit = 10 } = req.query;
 
   const lat1Float = parseFloat(lat1);
@@ -17,11 +17,11 @@ router.get("/", async (req, res) => {
 
     if (search) {
       const matchingCount = await Peak.countDocuments({
-        "tags.name": { $regex: search, $options: "i" },
+        'tags.name': { $regex: search, $options: 'i' },
       });
 
       data = await Peak.find({
-        "tags.name": { $regex: search, $options: "i" },
+        'tags.name': { $regex: search, $options: 'i' },
       })
         .skip(skip)
         .limit(parseInt(limit));
@@ -54,17 +54,17 @@ router.get("/", async (req, res) => {
 
     res.json({ data, total });
   } catch (error) {
-    console.error("Error fetching peaks:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Error fetching peaks:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-router.get("/count", async (_, res) => {
+router.get('/count', async (_, res) => {
   try {
     const total = await Peak.countDocuments();
     res.status(200).json({ total: total });
   } catch (error) {
-    res.status(500).json("Internal server error");
+    res.status(500).json('Internal server error');
   }
 });
 

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const peakSchema = new mongoose.Schema(
   {
@@ -17,10 +17,10 @@ const peakSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-const Peak = mongoose.model("Peak", peakSchema);
+const Peak = mongoose.model('Peak', peakSchema);
 
 const addIndex = async (fields, options) => {
   const indexExists = await Peak.collection.indexExists(options.name);
@@ -34,9 +34,9 @@ const addIndex = async (fields, options) => {
   }
 };
 
-if (process.env.NODE_ENV !== "production") {
-  addIndex(["lat", "lon"], { name: "latLonIndex" });
-  addIndex(["tags.name"], { name: "peaksNameIndex" });
+if (process.env.NODE_ENV !== 'production') {
+  addIndex(['lat', 'lon'], { name: 'latLonIndex' });
+  addIndex(['tags.name'], { name: 'peaksNameIndex' });
 }
 
 export default Peak;

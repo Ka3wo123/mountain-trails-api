@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const saddleSchema = new mongoose.Schema(
   {
@@ -17,9 +17,9 @@ const saddleSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-const Saddle = mongoose.model("Saddle", saddleSchema);
+const Saddle = mongoose.model('Saddle', saddleSchema);
 
 export default Saddle;
