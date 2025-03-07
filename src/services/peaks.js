@@ -1,10 +1,7 @@
-import express from 'express';
-import Peak from './models/peak.js';
+import Peak from '../models/peak.js';
 
-const router = express.Router();
-
-router.get('/', async (req, res) => {
-  const { lat1, lon1, lat2, lon2, search, page = 1, limit = 10 } = req.query;
+export const findAll = async (params) => {
+  const { lat1, lon1, lat2, lon2, search, page = 1, limit = 10 } = params;
 
   const lat1Float = parseFloat(lat1);
   const lon1Float = parseFloat(lon1);
@@ -25,9 +22,7 @@ router.get('/', async (req, res) => {
       })
         .skip(skip)
         .limit(parseInt(limit));
-
-      res.json({ data, total: matchingCount });
-      return;
+      return { data, total: matchingCount };
     }
 
     const total = await Peak.countDocuments({
@@ -52,20 +47,17 @@ router.get('/', async (req, res) => {
       },
     });
 
-    res.json({ data, total });
+    return { data, total };
   } catch (error) {
-    console.error('Error fetching peaks:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    throw error;
   }
-});
+};
 
-router.get('/count', async (_, res) => {
+export const countPeaks = async () => {
   try {
     const total = await Peak.countDocuments();
-    res.status(200).json({ total: total });
+    return total;
   } catch (error) {
-    res.status(500).json('Internal server error');
+    throw error;
   }
-});
-
-export default router;
+};

@@ -18,3 +18,11 @@ Content-Type: application/json
 POST {{URL}}/users/refresh-token
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2IzMTdlZjVjMzQ3MDAzZGM0ZGEyODEiLCJuaWNrIjoidGVzdCIsImlhdCI6MTc0MDkxMTQwNCwiZXhwIjoxNzQwOTEyMDA0fQ.ZOjjsKUbz0A-UuncjTL41ytQfDxEK34_jD9rwKh8um0
+
+# @ref session
+POST {{URL}}/users/test/peaks
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2IzMTdlZjVjMzQ3MDAzZGM0ZGEyODEiLCJuaWNrIjoidGVzdCIsImlhdCI6MTc0MDk5ODgyMywiZXhwIjoxNzQwOTk4ODgzfQ.TL5Emn7mv3LwHkOC5b1K6hVsDgHF51urSnJqrS7_-ek 
+{
+    "peakId": "67a8d45ad7c8db5a27b28e50"
+}

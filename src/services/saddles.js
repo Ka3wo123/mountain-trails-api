@@ -1,11 +1,7 @@
-import express from 'express';
-import Saddle from './models/saddle.js';
+import Saddle from '../models/saddle.js';
 
-const router = express.Router();
-
-router.get('/', async (req, res) => {
-  const { lat1, lon1, lat2, lon2 } = req.query;
-
+export const findAll = async (params) => {
+  const { lat1, lon1, lat2, lon2 } = params;
   const lat1Float = parseFloat(lat1);
   const lon1Float = parseFloat(lon1);
   const lat2Float = parseFloat(lat2);
@@ -22,12 +18,8 @@ router.get('/', async (req, res) => {
         $lte: Math.max(lon1Float, lon2Float),
       },
     });
-
-    res.json({ data });
+    return data;
   } catch (error) {
-    console.error('Error fetching saddles:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    throw error;
   }
-});
-
-export default router;
+};

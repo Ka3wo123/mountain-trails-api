@@ -1,0 +1,5 @@
+.vercel
+.yarn
+coverage
+node_modules
+.pnp.*

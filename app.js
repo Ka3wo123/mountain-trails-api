@@ -3,11 +3,12 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import peaksRouter from './src/peaksRoutes.js';
-import saddlesRouter from './src/saddlesRoutes.js';
-import userRouter from './src/userRoutes.js';
-import photosRouter from './src/photosRoutes.js';
+import peaksRouter from './src/routes/peaks.js';
+import saddlesRouter from './src/routes/saddles.js';
+import userRouter from './src/routes/users.js';
+import photosRouter from './src/routes/photos.js';
 import { LOCAL_URL, PROD_URL } from './config.js';
+import { setProblemJsonHeader } from './src/middlewares/jsonProblem.js';
 
 const app = express();
 const allowedOrigins = [PROD_URL, LOCAL_URL];
@@ -18,6 +19,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use(setProblemJsonHeader);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
