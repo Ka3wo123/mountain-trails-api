@@ -16,9 +16,8 @@ const REFRESH_EXPIRES_IN = '30d';
 export const findAll = async (params) => {
   const { page, limit } = params;
   const skip = (parseInt(page) - 1) * parseInt(limit);
-  console.log(skip, page, limit)
   try {
-    const users = await User.find().skip(skip).limit(parseInt(limit)); 
+    const users = await User.find().skip(skip).limit(parseInt(limit));
     const total = await User.countDocuments();
     return { data: toDto(users), total };
   } catch (error) {
@@ -90,23 +89,27 @@ export const getAccessToken = (refreshToken) => {
 };
 
 export const findUserPeaks = async (nick, params) => {
-  const { page, limit } = params;
+  const { next, limit } = params;
+  const limitToInt = parseInt(limit) || 10;
 
   try {
     const user = await User.findOne({ nick });
     if (!user) {
       throw new NotFoundError('User not found');
     }
+
     const peaksAchievedIds = user.peaksAchieved.map((peak) => peak.peakId);
-    const peaks = await Peak.find({ _id: { $in: peaksAchievedIds } });
+    let query = { _id: { $in: peaksAchievedIds } };
 
-    const totalSystemPeaks = await Peak.countDocuments();
+    if (next) {
+      query._id.$gt = next;
+    }
 
-    const totalPeaks = peaks.length;
-    const startIndex = (page - 1) * limit;
-    const peaksOnPage = peaks.slice(startIndex, startIndex + parseInt(limit));
+    const peaks = await Peak.find(query).sort({ _id: 1 }).limit(limitToInt);
 
-    const peakDtos = peaksOnPage.map((peak) => ({
+    const nextCursor = peaks.length < limitToInt ? null : peaks[peaks.length - 1]._id; // If less than limit, nextCursor is null
+
+    const peakDtos = peaks.map((peak) => ({
       peakId: peak._id,
       name: peak.tags.name,
       ele: peak.tags.ele,
@@ -116,11 +119,10 @@ export const findUserPeaks = async (nick, params) => {
 
     return {
       peakDtos,
-      totalSystemPeaks,
-      totalPeaks,
-      totalPages: Math.ceil(totalPeaks / limit),
-      currentPage: parseInt(page),
-      limit: parseInt(limit),
+      totalSystemPeaks: await Peak.countDocuments(),
+      totalPeaks: peaksAchievedIds.length,
+      nextCursor,
+      limit: limitToInt,
     };
   } catch (error) {
     throw error;
@@ -151,7 +153,10 @@ export const addPeakToUser = async (nick, params) => {
       peakId: peakId,
     };
 
-    const updateResult = await User.updateOne({ nick }, { $addToSet: { peaksAchieved: peakToSave } });
+    const updateResult = await User.updateOne(
+      { nick },
+      { $addToSet: { peaksAchieved: peakToSave } }
+    );
 
     await user.save();
 

@@ -5,7 +5,7 @@ export const find = async (req, res) => {
     const data = await findAll(params);
     res.status(200).json(data);
   } catch (error) {
-    res.problem(error.status, error.name, error.message);
+    res.problem(error.status, error.name, error.message, req.originalUrl);
   }
 };
 
@@ -14,6 +14,6 @@ export const count = async (_, res) => {
     const total = await countPeaks();
     res.status(200).json(total);
   } catch (error) {
-    res.problem(error.status, error.name, error.message);
+    res.problem(error.status, error.name, error.message, req.originalUrl);
   }
 };

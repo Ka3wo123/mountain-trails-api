@@ -16,7 +16,7 @@ export const find = async (req, res) => {
     const users = await findAll(params);
     res.status(200).json(users);
   } catch (error) {
-    res.problem(error.status, error.name, error.message);
+    res.problem(error.status, error.name, error.message, req.originalUrl);
   }
 };
 
@@ -26,7 +26,7 @@ export const findOne = async (req, res) => {
     const user = await findOneByNick(nick);
     res.status(200).json(user);
   } catch (error) {
-    res.problem(error.status, error.name, error.message);
+    res.problem(error.status, error.name, error.message, req.originalUrl);
   }
 };
 
@@ -37,7 +37,7 @@ export const register = async (req, res) => {
     await create(user);
     res.status(201).json({ message: 'User created' });
   } catch (error) {
-    res.problem(error.status, error.name, error.message);
+    res.problem(error.status, error.name, error.message, req.originalUrl);
   }
 };
 
@@ -58,7 +58,7 @@ export const login = async (req, res) => {
       user: { nick: user.nick },
     });
   } catch (error) {
-    res.problem(error.status, error.name, error.message);
+    res.problem(error.status, error.name, error.message, req.originalUrl);
   }
 };
 
@@ -69,7 +69,7 @@ export const refresh = async (req, res) => {
     const accessToken = await getAccessToken(refreshToken);
     res.status(200).json({ accessToken });
   } catch (error) {
-    res.problem(error.status, error.name, error.message);
+    res.problem(error.status, error.name, error.message, req.originalUrl);
   }
 };
 
@@ -82,7 +82,7 @@ export const logout = async (_, res) => {
     });
     res.json({ message: 'Cleared refresh token' });
   } catch (error) {
-    res.problem(error.status, error.name, error.message);
+    res.problem(error.status, error.name, error.message, req.originalUrl);
   }
 };
 
@@ -93,7 +93,7 @@ export const getPeaks = async (req, res) => {
     const result = await findUserPeaks(nick, params);
     res.status(200).json(result);
   } catch (error) {
-    res.problem(error.status, error.name, error.message);
+    res.problem(error.status, error.name, error.message, req.originalUrl);
   }
 };
 
@@ -105,7 +105,7 @@ export const addNewUserPeak = async (req, res) => {
     const result = await addPeakToUser(nick, body);
     res.status(201).json();
   } catch (error) {
-    res.problem(error.status, error.name, error.message);
+    res.problem(error.status, error.name, error.message, req.originalUrl);
   }
 };
 
@@ -117,6 +117,6 @@ export const deletePeakForUser = async (req, res) => {
     await deleteUserPeak(nick, body);
     res.status(200).json();
   } catch (error) {
-    res.problem(error.status, error.name, error.message);
+    res.problem(error.status, error.name, error.message, req.originalUrl);
   }
 };

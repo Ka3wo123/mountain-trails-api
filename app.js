@@ -30,7 +30,7 @@ app.use('/api/saddles', saddlesRouter);
 app.use('/api/users', userRouter);
 app.use('/api/photos', photosRouter);
 
-const mongoUri = process.env.MONGO_URI ? process.env.MONGO_URI : 'mongodb://localhost:27017/trails';
+const mongoUri = process.env.MONGO_URI ? process.env.MONGO_URI : process.env.LOCAL_MONGO_URI;
 
 mongoose
   .connect(mongoUri)

@@ -19,7 +19,7 @@ cloudinary.config({
 export const uploadImageToCloudinary = async (file, folder) => {
   const fileExt = file.originalname.split('.').pop().toLowerCase();
   if (!allowedFormats.includes(fileExt)) {
-    throw new UnsupportedFormatError();
+    throw new UnsupportedFormatError(this, { allowedFormats });
   }
 
   if (file.size > MAX_FILE_SIZE) {
@@ -45,7 +45,9 @@ export const uploadImageToCloudinary = async (file, folder) => {
       default:
         suffix = 'B';
     }
-    throw new OversizeFileError(`File is too large. Max size: ${calcFileSize} ${suffix}`);
+    throw new OversizeFileError(`File is too large. Max size: ${calcFileSize} ${suffix}`, {
+      maxSize: `${calcFileSize} ${suffix}`,
+    });
   }
   return new Promise((resolve, reject) => {
     cloudinary.uploader
@@ -57,7 +59,8 @@ export const uploadImageToCloudinary = async (file, folder) => {
   });
 };
 
-export const addImageToUser = async (user, peakId, uploadResult) => {
+export const addImageToUser = async (nick, peakId, uploadResult) => {
+  const user = await User.findOne({ nick });
   const peakIndex = user.peaksAchieved.findIndex((p) => p.peakId.toString() === peakId);
   if (peakIndex === -1) throw new NotFoundError('Peak not found');
 
@@ -70,7 +73,7 @@ export const addImageToUser = async (user, peakId, uploadResult) => {
 };
 
 export const deleteImageFromUser = async (nick, peakId, publicId) => {
-  const user = await User.findOne({nick})
+  const user = await User.findOne({ nick });
   const peakIndex = user.peaksAchieved.findIndex((p) => p.peakId.toString() === peakId);
   if (peakIndex === -1) throw new NotFoundError("Peak not found in user's achieved list.");
 

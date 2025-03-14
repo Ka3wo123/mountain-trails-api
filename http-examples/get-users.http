@@ -1,7 +1,10 @@
 @URL=http://localhost:5000/api
 
 # @name session
-GET {{URL}}/users
+GET {{URL}}/users?page=1&limit=1
+
+# @ref session
+GET {{URL}}/users/ka3wo/peaks?next=67a8d45ad7c8db5a27b2ed53
 
 # @ref session
 GET {{URL}}/users/test
@@ -26,3 +29,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2IzM
 {
     "peakId": "67a8d45ad7c8db5a27b28e50"
 }
+
+###
+### Mapa Turystyczna Route Request
+POST https://mapa-turystyczna.pl/widget/route
+Content-Type: application/x-www-form-urlencoded
+
+route_query=49.4390940,20.4854140;49.4251380,20.4825950&route_type=v=foot,m=hiking&event_category=Route+details&display_label=true
